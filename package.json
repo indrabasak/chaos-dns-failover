@@ -1,0 +1,46 @@
+{
+  "name": "chaos-testing-example",
+  "version": "1.0.0",
+  "description": "A simple example of chaos testing in AWS",
+  "main": "index.js",
+  "repository": "https://github.com/indrabasak/chaos-testing-example.git",
+  "author": "indra.basak1@gmail.com",
+  "license": "MIT",
+  "scripts": {
+    "test": "./node_modules/.bin/cucumber-js -f json:cucumber.json chaos-test/src/features/ -r chaos-test/src/steps/  --parallel 1; node chaos-test/src/template/report.js",
+    "apigateway-test": "./node_modules/.bin/cucumber-js -f json:cucumber.json chaos-test/src/features/ -r chaos-test/src/steps/ --tags '@apigateway-outage-by-region'; node chaos-test/src/template/report.js",
+    "report": "node chaos-test/src/template/report.js",
+    "lint": "./node_modules/.bin/eslint sls/src ./*.js -f table"
+  },
+  "devDependencies": {
+    "eslint": "^8.32.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-formatter-table": "^7.32.1",
+    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-jest": "^25.2.2",
+    "eslint-plugin-prettier": "^4.0.0",
+    "jest": "^27.3.1",
+    "jest-html-reporter": "^3.4.2",
+    "jest-junit": "^13.0.0",
+    "jest-sonar-reporter": "^2.0.0",
+    "prettier": "2.5.1"
+  },
+  "dependencies": {
+    "@aws-sdk/client-fis": "^3.352.0",
+    "@cucumber/cucumber": "^9.1.2",
+    "aws-sdk": "^2.1400.0",
+    "axios": "^1.4.0",
+    "cucumber-html-reporter": "^7.1.0",
+    "dotenv-flow": "^3.2.0",
+    "fs": "^0.0.1-security",
+    "lambda-api": "^0.12.0",
+    "nunjucks": "^3.2.4",
+    "qs": "^6.11.2",
+    "serverless-deployment-bucket": "^1.6.0",
+    "serverless-domain-manager": "^7.0.4",
+    "serverless-localstack": "^1.1.1",
+    "uuid": "^9.0.0",
+    "winston": "^3.8.2"
+  }
+}

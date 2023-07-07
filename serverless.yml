@@ -1,0 +1,110 @@
+service: chaos-dns-example
+frameworkVersion: '3'
+
+useDotenv: true
+
+custom:
+  baseAppName: chaos-dns
+  config: ${file(sls/environments/${self:provider.region}/${opt:stage, self:provider.stage, 'dev'}.yml)}
+  deploymentBucket:
+    name: '${self:service}-deployments-${self:provider.region}-${aws:accountId}'
+    policy: { "Version": "2008-10-17", "Statement": [{"Effect": "Deny","Principal": "*","Action": "s3:*","Resource": ["arn:aws:s3:::${self:service}-deployments-${aws:region}-${aws:accountId}/*","arn:aws:s3:::${self:service}-deployments-${aws:region}-${aws:accountId}"],"Condition": {"Bool": {"aws:SecureTransport": "false"}}}]}
+    blockPublicAccess: true
+    skipPolicySetup: false
+    versioning: true
+    tags:
+      - Key: STAGE
+        Value: ${opt:stage, 'sbx'}
+      - Key: 'adsk:moniker'
+        Value: ${self:custom.config.moniker}
+  healthCheck:
+    id: !GetAtt Route53HealthCheck.ID
+  customDomains:
+    - rest:
+        domainName: ${self:custom.baseAppName}.${self:custom.config.dnsName}
+        certificateName: ${self:custom.baseAppName}.${self:custom.config.dnsName}
+        endpointType: 'regional'
+        hostedZoneId: ${self:custom.config.hostedZone}
+        autoDomain: true
+        hostedZonePrivate: false
+        route53Params:
+          routingPolicy: weighted
+          weight: ${self:custom.config.route53Weight}
+          setIdentifier: ${self:custom.baseAppName}-${self:provider.region}
+          healthCheckId: !Ref Route53HealthCheck
+#          healthCheckId: ${self:custom.healthCheck.id}
+#          healthCheckId: !GetAtt Route53HealthCheck.Id
+#            Fn::GetAtt:
+#              - Route53HealthCheck
+#              - id
+  localstack:
+    stages:
+      - local
+    debug: true
+    endpoints:
+      APIGateway: http://localhost:4566
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  stage: ${opt:stage, 'sbx'}
+  region: ${opt:region, 'us-east-1'}
+  cfnRole: arn:aws:iam::${aws:accountId}:role/AdskCfnAdministratorAccessExecutionRole
+#  apiGateway:
+#    restApiId: ${ssm:/chaos-testing-example/rest_api_id}
+#    restApiRootResourceId: ${ssm:/chaos-testing-example/root_resource_id}
+#    description: "Chaos testing example health"
+
+package:
+  individually: true
+  exclude:
+    - ./**
+    - '!node_modules/**'
+
+functions:
+  health:
+      name: ${self:service}-health
+      handler: sls/src/health/index.handler
+      role: HealthLambdaRole
+      package:
+        include:
+          - sls/src/common/**
+          - sls/src/health/**
+      memorySize: 512
+      timeout: 30
+      reservedConcurrency: ${self:custom.config.lambda-health-reservedConcurrency}
+      events:
+        - http:
+            path: 'v1/health'
+            method: GET
+            cors: true
+
+  hello:
+      name: ${self:service}-hello
+      handler: sls/src/hello/index.handler
+      role: HelloLambdaRole
+      package:
+        include:
+          - sls/src/common/**
+          - sls/src/hello/**
+      memorySize: 512
+      timeout: 30
+      reservedConcurrency: ${self:custom.config.lambda-hello-reservedConcurrency}
+      events:
+        - http:
+            path: 'v1/hello'
+            method: GET
+            cors: true
+
+resources:
+  - ${file(sls/resources/role-health-lambda.yml)}
+  - ${file(sls/resources/role-hello-lambda.yml)}
+  - ${file(sls/resources/route53-health-check.yml)}
+
+plugins:
+  - serverless-localstack
+  - serverless-deployment-bucket
+  - serverless-domain-manager
+
+
+

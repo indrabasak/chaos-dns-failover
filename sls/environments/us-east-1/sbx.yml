@@ -1,0 +1,8 @@
+---
+moniker: 123456-C-UE1
+logLevel: debug
+dnsName: indra-sbx.autodesk.com
+hostedZone: Z03796663SKYSDD1W52DV
+route53Weight: 0
+lambda-health-reservedConcurrency: 5
+lambda-hello-reservedConcurrency: 5

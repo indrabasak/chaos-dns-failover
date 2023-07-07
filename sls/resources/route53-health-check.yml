@@ -1,0 +1,11 @@
+Resources:
+  Route53HealthCheck:
+    Type: AWS::Route53::HealthCheck
+    Properties:
+      HealthCheckConfig:
+        Port: 443
+        Type: HTTPS
+        ResourcePath: /v1/health
+        FullyQualifiedDomainName: ${self:custom.baseAppName}.${self:custom.config.dnsName}
+        RequestInterval: 30
+        FailureThreshold: 3
