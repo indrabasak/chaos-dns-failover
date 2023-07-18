@@ -19,19 +19,19 @@ custom:
         Value: ${self:custom.config.moniker}
   healthCheck:
     id: !GetAtt Route53HealthCheck.ID
-  customDomains:
-    - rest:
-        domainName: ${self:custom.baseAppName}.${self:custom.config.dnsName}
-        certificateName: ${self:custom.baseAppName}.${self:custom.config.dnsName}
-        endpointType: 'regional'
-        hostedZoneId: ${self:custom.config.hostedZone}
-        autoDomain: true
-        hostedZonePrivate: false
-        route53Params:
-          routingPolicy: weighted
-          weight: ${self:custom.config.route53Weight}
-          setIdentifier: ${self:custom.baseAppName}-${self:provider.region}
-          healthCheckId: !Ref Route53HealthCheck
+#  customDomains:
+#    - rest:
+#        domainName: ${self:custom.baseAppName}.${self:custom.config.dnsName}
+#        certificateName: ${self:custom.baseAppName}.${self:custom.config.dnsName}
+#        endpointType: 'regional'
+#        hostedZoneId: ${self:custom.config.hostedZone}
+#        autoDomain: true
+#        hostedZonePrivate: false
+#        route53Params:
+#          routingPolicy: weighted
+#          weight: ${self:custom.config.route53Weight}
+#          setIdentifier: ${self:custom.baseAppName}-${self:provider.region}
+#          healthCheckId: !Ref Route53HealthCheck
 #          healthCheckId: ${self:custom.healthCheck.id}
 #          healthCheckId: !GetAtt Route53HealthCheck.Id
 #            Fn::GetAtt:
@@ -50,10 +50,10 @@ provider:
   stage: ${opt:stage, 'sbx'}
   region: ${opt:region, 'us-east-1'}
   cfnRole: arn:aws:iam::${aws:accountId}:role/AdskCfnAdministratorAccessExecutionRole
-#  apiGateway:
-#    restApiId: ${ssm:/chaos-testing-example/rest_api_id}
-#    restApiRootResourceId: ${ssm:/chaos-testing-example/root_resource_id}
-#    description: "Chaos testing example health"
+  apiGateway:
+    restApiId: ${ssm:/chaos-dns-failover/rest_api_id}
+    restApiRootResourceId: ${ssm:/chaos-dns-failover/root_resource_id}
+    description: "Chaos DNS Failover Example"
 
 package:
   individually: true
@@ -104,7 +104,7 @@ resources:
 plugins:
   - serverless-localstack
   - serverless-deployment-bucket
-  - serverless-domain-manager
+#  - serverless-domain-manager
 
 
 

@@ -9,5 +9,10 @@ const logger = require('../../common/lambda-logger');
 // eslint-disable-next-line no-unused-vars
 exports.getHealth = async (req, res) => {
   logger.info('Calling health endpoint');
-  return { status: 200, payload: 'UP' };
+  const payload = {
+    status: 'UP',
+    region: process.env.AWS_REGION
+  }
+
+  return { status: 200, payload: payload};
 };

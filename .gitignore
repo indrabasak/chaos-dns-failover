@@ -374,3 +374,10 @@ fabric.properties
 /notes.txt
 /volume/
 /jm/.terraform/
+/out-us-east-1-sbx.plan
+/out-us-west-2-sbx.plan
+/terraform.tfstate
+/terraform.tfstate.backup
+/.terraform.lock.hcl
+/backend.tf.bak
+/.terraform/
