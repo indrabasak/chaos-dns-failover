@@ -1,0 +1,19 @@
+{
+  "actions": {
+    "lambda invoke operation": {
+      "actionId": "localstack:generic:api-error",
+      "parameters": {
+        "service": "lambda",
+        "percentage": "100",
+        "exception": "exception, terrible error in invoking lambda",
+        "errorCode": "500",
+        "region":"us-west-2"
+      }
+    }
+  },
+  "description": "terrible error in invoking lambda",
+  "stopConditions": [{
+    "source": "none"
+  }],
+  "roleArn": "arn:aws:iam:123456789012:role/ExperimentRole"
+}

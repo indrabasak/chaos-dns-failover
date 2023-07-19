@@ -1,5 +1,5 @@
 ---
-moniker: 123456-C-UW2
+moniker: 123456-C-UE1
 logLevel: debug
 lambda-health-reservedConcurrency: 5
 lambda-hello-reservedConcurrency: 5

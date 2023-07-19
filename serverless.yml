@@ -99,7 +99,7 @@ functions:
 resources:
   - ${file(sls/resources/role-health-lambda.yml)}
   - ${file(sls/resources/role-hello-lambda.yml)}
-  - ${file(sls/resources/route53-health-check.yml)}
+#  - ${file(sls/resources/route53-health-check.yml)}
 
 plugins:
   - serverless-localstack
