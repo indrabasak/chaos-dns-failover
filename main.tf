@@ -73,4 +73,5 @@ module "api_gateway" {
   health_check_name = var.health_check_name
   route53_failover_routing_policy = var.route53_failover_routing_policy
   route53_identifier = var.route53_identifier
+  region = var.region
 }

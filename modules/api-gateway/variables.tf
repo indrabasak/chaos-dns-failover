@@ -52,6 +52,9 @@ variable "route53_identifier" {
   default = ""
 }
 
+variable "region" {
+  type = string
+}
 
 #variable "api_gateway_region" {
 #  type        = string

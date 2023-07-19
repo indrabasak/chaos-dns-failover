@@ -26,11 +26,11 @@ terraformDeploy() {
 
   echo "2 ------------------"
   terraform init -var-file=./environments/$1/$2.tfvars
-  bucketImportStatus=$(terraform import -var "key=${BASE_NAME}/terraform.tfstate" -var-file=./environments/$1/$2.tfvars aws_s3_bucket_public_access_block.terraform_state ${bucketName})
+  bucketImportStatus=$(terraform import -var "key=${BASE_NAME}/$1/$2/terraform.tfstate" -var-file=./environments/$1/$2.tfvars aws_s3_bucket_public_access_block.terraform_state ${bucketName})
   echo "3 ------------------"
   echo $bucketImportStatus
 
-  bucketPublicAccessBlockImportStatus=$(terraform import -var "key=${BASE_NAME}/terraform.tfstate" -var-file=./environments/$1/$2.tfvars aws_s3_bucket_public_access_block.terraform_state ${bucketName})
+  bucketPublicAccessBlockImportStatus=$(terraform import -var "key=${BASE_NAME}/$1/$2/terraform.tfstate" -var-file=./environments/$1/$2.tfvars aws_s3_bucket_public_access_block.terraform_state ${bucketName})
   echo "4 ------------------"
   echo $bucketPublicAccessBlockImportStatus
 
@@ -40,7 +40,7 @@ terraformDeploy() {
     terraformPlanOutputFile="$(pwd)/out-$1-$2.plan"
     echo ${terraformPlanOutputFile}
     echo "5 ------------------"
-    terraform plan -var "key=${BASE_NAME}/terraform.tfstate" -var-file=./environments/$1/$2.tfvars -out="${terraformPlanOutputFile}"
+    terraform plan -var "key=${BASE_NAME}/$1/$2/terraform.tfstate" -var-file=./environments/$1/$2.tfvars -out="${terraformPlanOutputFile}"
     echo "6 ------------------"
     terraform apply -auto-approve -lock=true "${terraformPlanOutputFile}"
   else
